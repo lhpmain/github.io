@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>如何优雅的使用Github Action服务来将Hexo部署到Github Pages | 网络人的博客</title><meta name="author" content="lhpmain"><meta name="copyright" content="lhpmain"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本教程由木子dn提供李子翻版 参考文章Bilibili视频教程-9分钟零成本搭建自动化部署个人博客(Hexo + Github Action + Page)Hexo官方文档利用 GitHub Action 自动部署 Hexo 博客[Hexo主题-Icarusps:&#x2F;&#x2F;ppoffice.github.io&#x2F;hexo-theme-icarus&#x2F;uncategor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优雅的使用Github Action服务来将Hexo部署到Github Pages">
+<meta property="og:url" content="https://bk.lhpcn.dpdns.org/2024/06/19/2024_06_19_12_31/index.html">
+<meta property="og:site_name" content="网络人的博客">
+<meta property="og:description" content="本教程由木子dn提供李子翻版 参考文章Bilibili视频教程-9分钟零成本搭建自动化部署个人博客(Hexo + Github Action + Page)Hexo官方文档利用 GitHub Action 自动部署 Hexo 博客[Hexo主题-Icarusps:&#x2F;&#x2F;ppoffice.github.io&#x2F;hexo-theme-icarus&#x2F;uncategor">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bk.lhpcn.dpdns.org/img/butterfly-icon.png">
+<meta property="article:published_time" content="2024-06-19T12:31:53.000Z">
+<meta property="article:modified_time" content="2025-03-16T15:42:57.300Z">
+<meta property="article:author" content="lhpmain">
+<meta property="article:tag" content="博客网站">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bk.lhpcn.dpdns.org/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "如何优雅的使用Github Action服务来将Hexo部署到Github Pages",
+  "url": "https://bk.lhpcn.dpdns.org/2024/06/19/2024_06_19_12_31/",
+  "image": "https://bk.lhpcn.dpdns.org/img/butterfly-icon.png",
+  "datePublished": "2024-06-19T12:31:53.000Z",
+  "dateModified": "2025-03-16T15:42:57.300Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "lhpmain",
+      "url": "https://bk.lhpcn.dpdns.org/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://bk.lhpcn.dpdns.org/2024/06/19/2024_06_19_12_31/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '如何优雅的使用Github Action服务来将Hexo部署到Github Pages',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">网络人的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">如何优雅的使用Github Action服务来将Hexo部署到Github Pages</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">如何优雅的使用Github Action服务来将Hexo部署到Github Pages</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-19T12:31:53.000Z" title="发表于 2024-06-19 12:31:53">2024-06-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-16T15:42:57.300Z" title="更新于 2025-03-16 15:42:57">2025-03-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Hexo/">Hexo</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>本教程由<a target="_blank" rel="noopener" href="https://b23.tv/WtUtLta">木子dn</a>提供李子翻版</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xTgTemEDU">Bilibili视频教程-9分钟零成本搭建自动化部署个人博客(Hexo + Github Action + Page)</a><BR/><br><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo官方文档</a><BR/><br><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2201648">利用 GitHub Action 自动部署 Hexo 博客</a><BR/><br>[Hexo主题-Icarusps:&#x2F;&#x2F;ppoffice.github.io&#x2F;hexo-theme-icarus&#x2F;uncategorized&#x2F;icarus%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#x2F;#install-npm)</p>
+<h1 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h1><p>当前PC环境中有Node和Git。版本可以参考Hexo文档。</p>
+<p>文章中出现的yourusername为Github用户名，your-repo为仓库名。</p>
+<h1 id="1-初始化Hexo"><a href="#1-初始化Hexo" class="headerlink" title="1. 初始化Hexo"></a>1. 初始化Hexo</h1><p>安装脚手架，初始化hexo，这会新建blog文件夹，进入后安装依赖。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo init blog</span><br><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-初始化仓库"><a href="#2-初始化仓库" class="headerlink" title="2. 初始化仓库"></a>2. 初始化仓库</h1><p>可以选择利用VSCode等软件直接对项目开源到github仓库。</p>
+<p>也可以手动去github创建一个空仓库，然后手动在命令行中推送。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/yourusername/your-repo.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-创建Token"><a href="#3-创建Token" class="headerlink" title="3. 创建Token"></a>3. 创建Token</h1><p>在个人设置中新增一个Personal access tokens。至少要包含repo权限，然后记住token。<br>这个token是给Github Action用的，Github Action会把Hexo编译部署到gh-pages分支。<br><img src="/2024_06_19_12_31/image1.png" class="fancybox"></p>
+<p>随后在存放Hexo代码的仓库里把这个Token新增进去，名称为GH_TOKEN(随意，后面需要一致)。<br><img src="/2024_06_19_12_31/image2.png" class="fancybox"></p>
+<h1 id="4-修改-config-yml"><a href="#4-修改-config-yml" class="headerlink" title="4. 修改_config.yml"></a>4. 修改_config.yml</h1><p>在_config.yml中修改deploy字段。指示Hexo在deploy时的推送地址。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/yourusername/your-repo.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">gh-pages</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="5-配置Github-Action工作流"><a href="#5-配置Github-Action工作流" class="headerlink" title="5. 配置Github Action工作流"></a>5. 配置Github Action工作流</h1><p>在<code>.github</code>文件夹下新增<code>workflows</code>文件夹，然后新增<code>deploy.yml</code>文件，内容如下。</p>
+<p>里面有个node-version要和你本地的node一致。<br/><br>步骤大致意思就是使用ubuntu-latest作为基础环境，然后安装各种依赖，随后hexo generate生成博客网站静态文件夹，<br>把这个文件夹推送到同一仓库的gh-pages分支。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">Hexo</span> <span class="string">to</span> <span class="string">GitHub</span> <span class="string">Pages</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">main</span>  <span class="comment"># 当推送到 main 分支时触发</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span> <span class="string">repository</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">submodules:</span> <span class="literal">false</span>  <span class="comment"># 禁用子模块检查</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">Node.js</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">&#x27;18&#x27;</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">Dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">Hexo</span> <span class="string">Git</span> <span class="string">Deployer</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          npm install hexo-deployer-git --save</span></span><br><span class="line"><span class="string">          npm install hexo-cli -g</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Clean</span> <span class="string">and</span> <span class="string">Generate</span> <span class="string">Static</span> <span class="string">Files</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          hexo clean</span></span><br><span class="line"><span class="string">          hexo generate</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Configure</span> <span class="string">Git</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          git config --global user.name &#x27;github-actions[bot]&#x27;</span></span><br><span class="line"><span class="string">          git config --global user.email &#x27;github-actions[bot]@users.noreply.github.com&#x27;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">to</span> <span class="string">GitHub</span> <span class="string">Pages</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="attr">GH_TOKEN:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GH_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          cd public/</span></span><br><span class="line"><span class="string">          git init</span></span><br><span class="line"><span class="string">          git add -A</span></span><br><span class="line"><span class="string">          git commit -m &quot;Create by workflows&quot;</span></span><br><span class="line"><span class="string">          git remote add origin https://$&#123;&#123; secrets.GH_TOKEN &#125;&#125;@github.com/yourusername/your-repo.git</span></span><br><span class="line"><span class="string">          git push origin HEAD:gh-pages -f</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="6-推送验证"><a href="#6-推送验证" class="headerlink" title="6. 推送验证"></a>6. 推送验证</h1><p>把刚才更新的所有文件都推送一遍，github就会触发工作流，然后去网站看工作流运转的如何。<br>等一切运转完毕，就会发现仓库多出一个gh-pages分支。</p>
+<h1 id="7-配置Github-Pages"><a href="#7-配置Github-Pages" class="headerlink" title="7. 配置Github Pages"></a>7. 配置Github Pages</h1><p>在仓库settings中配置page来源为gh-pages分支即可。等待网站部署完毕，就可以看了。网站链接可以在settings的GitHub Pages看到，也可以去action里看到。<br><img src="/2024_06_19_12_31/image3.png" class="fancybox"></p>
+<h1 id="8-修改Hexo主题样式"><a href="#8-修改Hexo主题样式" class="headerlink" title="8. 修改Hexo主题样式"></a>8. 修改Hexo主题样式</h1><p>以一个比较热门的主题为演示示例，参考地址<a target="_blank" rel="noopener" href="https://github.com/ppoffice/hexo-theme-icarus">https://github.com/ppoffice/hexo-theme-icarus</a>。</p>
+<p>若要使用NPM将Icarus安装为Node包，在你的Hexo站点根目录运行如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -S hexo-theme-icarus hexo-renderer-inferno</span><br></pre></td></tr></table></figure>
+<p>接下来，使用hexo命令修改主题为Icarus:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo config theme icarus</span><br></pre></td></tr></table></figure>
+<p>会发现多出一个<code>_config.icarus.yml</code>文件。这是Icarus主题的配置文件。</p>
+<p>最后推送到仓库，等待部署后，就可以了。</p>
+<h1 id="10-添加文章"><a href="#10-添加文章" class="headerlink" title="10. 添加文章"></a>10. 添加文章</h1><p>你可以执行下列命令来创建一篇新文章或者新的页面。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
+<p>您可以在命令中指定文章的布局（layout），默认为 post，可以通过修改 _config.yml 中的 default_layout 参数来指定默认布局。</p>
+<p>文章添加编辑后，现在只需要推送到仓库，那么github不仅会保存你的Hexo个人博客源码，还会自动更新个人博客静态页面到gh-pages，由此触发github-page功能来更新你的个人博客网站。</p>
+<h1 id="遇到了一些问题和方案"><a href="#遇到了一些问题和方案" class="headerlink" title="遇到了一些问题和方案"></a>遇到了一些问题和方案</h1><h2 id="1-网站没有样式问题"><a href="#1-网站没有样式问题" class="headerlink" title="1. 网站没有样式问题"></a>1. 网站没有样式问题</h2><p>在网站打开F12，发现css等样式资源无法加载，仔细查看报错原因和请求地址，发现并不是当前仓库。</p>
+<p>缺少仓库地址，所以把请求地址复制一份，并在后面添加上仓库名即可，这需要修改_config.yml中修改url字段。yourusername似乎为小写。</p>
+<p>推送后等待工作流执行，查看结果。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://yourusername.github.io/your-repo</span></span><br><span class="line"><span class="attr">root:</span> <span class="string">/your-repo/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-图片不显示"><a href="#2-图片不显示" class="headerlink" title="2. 图片不显示"></a>2. 图片不显示</h2><p>在_config.yml中设置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>意思是每个md博文会单独配套一个同名文件夹，用来存放图片。形如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source/_posts/</span><br><span class="line">├── my-new-post.md</span><br><span class="line">└── my-new-post/</span><br><span class="line">    └── example.jpg</span><br></pre></td></tr></table></figure>
+<p>hexo提供三种语法</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% asset_path slug %&#125;</span><br><span class="line">&#123;% asset_img slug [title] %&#125;</span><br><span class="line">&#123;% asset_link slug [title] %&#125;</span><br></pre></td></tr></table></figure>
+<p>那么在md中可以这样引用图片</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% asset_img example.jpg This is an example image %&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来，部署的时候图片就不会不显示了，但是有个新的问题，<br>我在本地编辑md的时候无法预览图片怎么办。</p>
+<p>建议用VSCode下载插件<code>vscode-hexo</code>和<code>Hexo Utils</code>，随后在左边栏目就可以看到新Hexo Utils的新菜单，只要你的VSCode当前打开的文件夹是hexo的根目录，那么插件就会自动识别到，当你对md文件使用“侧边预览”时，图片就正常显示了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://bk.lhpcn.dpdns.org">lhpmain</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://bk.lhpcn.dpdns.org/2024/06/19/2024_06_19_12_31/">https://bk.lhpcn.dpdns.org/2024/06/19/2024_06_19_12_31/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://bk.lhpcn.dpdns.org" target="_blank">网络人的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/%E6%A0%87%E7%AD%BE/%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/">博客网站</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/01/04/2025_01_04_10_49/" title="关于李子"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">关于李子</div></div><div class="info-2"><div class="info-item-1">前言终于有人找到李子了想必是想来联系李子的吧 Github李子的Github 🔥🔥🔥插件源🔥🔥🔥漏洞不止，越狱不尽。李子源摘李，乐趣无极限。[李子源] 1https://lizirepo.us.kg/  BiliBili玩科技的李子 新玩游戏的李子- 旧 </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/01/24/2025_01_24_22_26/" title="hexo gitalk 坑点"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-24</div><div class="info-item-2">hexo gitalk 坑点</div></div><div class="info-2"><div class="info-item-1">gitalk坑点一.文件配置1.准备工作 • GitHub 账号：确保你有一个 GitHub 账号。 • GitHub 仓库：创建一个公共仓库用于存储评论。 • GitHub OAuth 应用：在 GitHub 的 Developer Settings 中创建一个 OAuth 应用。 • Application name：随意填写，例如“Gitalk Comments”。 • Homepage URL：填写你的博客首页 URL。 • Authorization callback URL：填写你的博客首页 URL。 • 完成注册后，记下生成的Client ID和Client Secret。 以上步骤即可完成 Gitalk 在 Butterfly 主题中的启用。如果遇到问题，请检查配置文件和代码是否正确，或者参考相关教程。 打开yourblog/themes/butterfly(主题)/_config.yml文件，搜索comments找到以下内容 123456789101112131415comments:  # Up to two comments system, the...</div></div></div></a><a class="pagination-related" href="/2025/02/14/2025_02_14_16_56_20/" title="提交博文的方法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-14</div><div class="info-item-2">提交博文的方法</div></div><div class="info-2"><div class="info-item-1">1.安装nodejswindows &lt;上网搜不掩饰了&gt;mac 安装brew，然后输入 12brew install nodejs npmnpm install hexo-cli -g iOS在App Store内安装ish应用 1234apk updateapk add bash nodejs npmnpm install hexo-cli -gapk upgrade 安卓安装Termux输入 1234pkg updatepkg upgradepkg install nodejs npmnpm install hexo-cli -g  2.创建博文在之前下的终端里输入 12hexo init blogcd blog 再次输入hexo new &#39;博文名称&#39;创建博文 使用Markdown语法编写/blog/source/_posts/博文名称.md的文件 3.私信李子上传博文</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">lhpmain</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/%E6%A0%87%E7%AD%BE/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">1.</span> <span class="toc-text">参考文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">前提条件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96Hexo"><span class="toc-number">3.</span> <span class="toc-text">1. 初始化Hexo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93"><span class="toc-number">4.</span> <span class="toc-text">2. 初始化仓库</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%88%9B%E5%BB%BAToken"><span class="toc-number">5.</span> <span class="toc-text">3. 创建Token</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E4%BF%AE%E6%94%B9-config-yml"><span class="toc-number">6.</span> <span class="toc-text">4. 修改_config.yml</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E9%85%8D%E7%BD%AEGithub-Action%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="toc-number">7.</span> <span class="toc-text">5. 配置Github Action工作流</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E6%8E%A8%E9%80%81%E9%AA%8C%E8%AF%81"><span class="toc-number">8.</span> <span class="toc-text">6. 推送验证</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-%E9%85%8D%E7%BD%AEGithub-Pages"><span class="toc-number">9.</span> <span class="toc-text">7. 配置Github Pages</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-%E4%BF%AE%E6%94%B9Hexo%E4%B8%BB%E9%A2%98%E6%A0%B7%E5%BC%8F"><span class="toc-number">10.</span> <span class="toc-text">8. 修改Hexo主题样式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0"><span class="toc-number">11.</span> <span class="toc-text">10. 添加文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E4%BA%86%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E5%92%8C%E6%96%B9%E6%A1%88"><span class="toc-number">12.</span> <span class="toc-text">遇到了一些问题和方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BD%91%E7%AB%99%E6%B2%A1%E6%9C%89%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-number">12.1.</span> <span class="toc-text">1. 网站没有样式问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9B%BE%E7%89%87%E4%B8%8D%E6%98%BE%E7%A4%BA"><span class="toc-number">12.2.</span> <span class="toc-text">2. 图片不显示</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/10/2025_3_10_6_42_00/" title="YDPEN_jailbreak：有道词典笔ADB权限获取教程">YDPEN_jailbreak：有道词典笔ADB权限获取教程</a><time datetime="2025-03-10T10:41:19.158Z" title="发表于 2025-03-10 10:41:19">2025-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/07/2025_03_07_20_40/" title="有道词典笔破解">有道词典笔破解</a><time datetime="2025-03-07T12:49:04.629Z" title="发表于 2025-03-07 12:49:04">2025-03-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/2025_03_6_20_36_02/" title="探索iOS插件源">探索iOS插件源</a><time datetime="2025-03-06T20:36:02.000Z" title="发表于 2025-03-06 20:36:02">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/14/2025_02_14_20_20_08/" title="江中论坛">江中论坛</a><time datetime="2025-02-14T20:20:08.000Z" title="发表于 2025-02-14 20:20:08">2025-02-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/14/2025_02_14_16_56_20/" title="提交博文的方法">提交博文的方法</a><time datetime="2025-02-14T16:56:20.000Z" title="发表于 2025-02-14 16:56:20">2025-02-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By lhpmain</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
